@@ -182,6 +182,8 @@
   const closeLightboxButton = $(".lightbox-close");
   let currentPhoto = 0;
   let lastFocusedElement = null;
+  let lightboxCloseTimer;
+  const blankLightboxImage = lightboxImage?.src || "";
 
   const showPhoto = (index) => {
     currentPhoto = (index + photos.length) % photos.length;
@@ -196,10 +198,13 @@
 
   const openLightbox = (index, trigger) => {
     if (!lightbox) return;
+    window.clearTimeout(lightboxCloseTimer);
     lastFocusedElement = trigger || document.activeElement;
+    lightbox.hidden = false;
+    // Ensure the browser paints the visible base state before the fade-in class.
+    void lightbox.offsetWidth;
     showPhoto(index);
     lightbox.classList.add("open");
-    lightbox.setAttribute("aria-hidden", "false");
     document.body.classList.add("lightbox-open");
     window.setTimeout(() => closeLightboxButton?.focus(), 30);
   };
@@ -207,15 +212,20 @@
   const closeLightbox = () => {
     if (!lightbox?.classList.contains("open")) return;
     lightbox.classList.remove("open");
-    lightbox.setAttribute("aria-hidden", "true");
     document.body.classList.remove("lightbox-open");
-    if (lightboxImage) lightboxImage.src = "";
+    lightboxCloseTimer = window.setTimeout(() => {
+      lightbox.hidden = true;
+      if (lightboxImage) lightboxImage.src = blankLightboxImage;
+    }, 250);
     lastFocusedElement?.focus?.();
   };
 
   $$('[data-lightbox]').forEach((trigger) => {
     const open = () => openLightbox(Number(trigger.dataset.lightbox), trigger);
-    trigger.addEventListener("click", open);
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      open();
+    });
     if (trigger.getAttribute("role") === "button" && trigger.tagName !== "BUTTON") {
       trigger.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
