@@ -1,0 +1,16 @@
+{
+  "name": "chill-out-cafe-pizza",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official-style website for Chill Out Cafe & Pizza, Prembagan, Dakshinkhan.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
