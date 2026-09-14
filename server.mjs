@@ -39,7 +39,9 @@ const server = createServer((request, response) => {
   }
 
   response.setHeader("Content-Type", types[extname(filePath).toLowerCase()] || "application/octet-stream");
-  response.setHeader("Cache-Control", extname(filePath) === ".html" ? "no-cache" : "public, max-age=3600");
+  const ext = extname(filePath).toLowerCase();
+  const noCache = ext === ".html" || ext === ".css" || ext === ".js" || ext === ".mjs";
+  response.setHeader("Cache-Control", noCache ? "no-cache, no-store, must-revalidate" : "public, max-age=3600");
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   // Do not set X-Frame-Options: Arena's live preview is embedded cross-origin.
@@ -47,5 +49,5 @@ const server = createServer((request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`Chill Out Cafe website running at http://${host}:${port}`);
+  console.log(`Skin & Soul website running at http://${host}:${port}`);
 });
