@@ -8,4 +8,5 @@ const files = ["index.html", "styles.css", "script.js", "favicon.svg"];
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 await Promise.all(files.map((file) => cp(resolve(root, file), resolve(output, file))));
-console.log(`Built ${files.length} files in dist/`);
+await cp(resolve(root, "images"), resolve(output, "images"), { recursive: true });
+console.log(`Built ${files.length} files + images/ in dist/`);
